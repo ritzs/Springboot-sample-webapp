@@ -1,0 +1,36 @@
+package springframework.spring_webapp.controllers;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+import springframework.spring_webapp.services.AuthorService;
+
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import java.util.Collections;
+
+@WebMvcTest(AuthorController.class)
+@DisplayName("AuthorController 테스트")
+class AuthorControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private AuthorService authorService;
+
+    @Test
+    @DisplayName("GET /authors - 정상 동작")
+    void getAuthors_ReturnsAuthorsViewAndModel() throws Exception {
+        given(authorService.findAll()).willReturn(Collections.emptySet());
+        mockMvc.perform(get("/authors"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("authors"))
+                .andExpect(model().attributeExists("authors"));
+    }
+}
